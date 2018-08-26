@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    traefik.frontend.rule.type: PathPrefixStrip
+  generation: 1
+  name: weave-scope-app-mesh
+  namespace: default
+spec:
+  rules:
+  - host: staging.rappi.com
+    http:
+      paths:
+      - backend:
+          serviceName: weave-scope-app
+          servicePort: 80
+        path: /mesh

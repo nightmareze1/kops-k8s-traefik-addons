@@ -1,0 +1,431 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  creationTimestamp: null
+  name: cluster.dev.itshellws-k8s.com
+spec:
+  api:
+    loadBalancer:
+      type: Public
+  authorization:
+    alwaysAllow: {}
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://kubernetes.virginia.dev.itshellws-k8s.com/cluster.dev.itshellws-k8s.com
+  dnsZone: dev.itshellws-k8s.com
+  additionalPolicies:
+    node: |
+      [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "autoscaling:DescribeAutoScalingGroups",
+            "autoscaling:DescribeAutoScalingInstances",
+            "autoscaling:SetDesiredCapacity",
+            "autoscaling:DescribeLaunchConfigurations",
+            "autoscaling:DescribeTags",
+            "autoscaling:TerminateInstanceInAutoScalingGroup"
+          ],
+          "Resource": ["*"]
+        }
+      ]
+  kubelet:
+    kubeReserved:
+        cpu: "150m"
+        memory: "192Mi"
+    kubeReservedCgroup: "/kube-reserved"
+    systemReserved:
+        cpu: "150m"
+        memory: "256Mi"
+    systemReservedCgroup: "/system-reserved"
+    enforceNodeAllocatable: "pods"
+  etcdClusters:
+  - etcdMembers:
+    - instanceGroup: master-us-east-1a
+      name: a
+    - instanceGroup: master-us-east-1b
+      name: b
+    - instanceGroup: master-us-east-1c
+      name: c
+    name: main
+  - etcdMembers:
+    - instanceGroup: master-us-east-1a
+      name: a
+    - instanceGroup: master-us-east-1b
+      name: b
+    - instanceGroup: master-us-east-1c
+      name: c
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  kubernetesVersion: 1.10.5
+  masterPublicName: api.cluster.dev.itshellws-k8s.com
+  networkCIDR: 10.100.0.0/16
+  networkID: vpc-0f96733877307fdb3
+  kubeProxy:
+    hostnameOverride: $HOSTNAME.us-east-1.compute.internal
+  networking:
+    weave:
+      mtu: 8912
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0
+  subnets:
+  - cidr: 10.100.54.0/24
+    id: subnet-00756a947011bca35
+    name: itshellws_dev_traefik_k8s_prv_c
+    zone: us-east-1c
+    type: Private
+    egress: nat-0408cb090cd4c0bd0
+  - cidr: 10.100.53.0/24
+    id: subnet-05d086497661705ad
+    name: itshellws_dev_traefik_k8s_prv_b
+    zone: us-east-1b
+    type: Private
+    egress: nat-04e04f4b26d4a9c0e
+  - cidr: 10.100.48.128/25
+    id: subnet-0cc275d8888c3e32a
+    name: itshellws_dev_traefik_aws_pub_b
+    zone: us-east-1b
+    type: Utility
+  - cidr: 10.100.5.0/24
+    id: subnet-080b3a5ca136eed6c
+    name: itshellws_dev_general_aws_prv_b
+    zone: us-east-1b
+    type: Private
+    egress: nat-04e04f4b26d4a9c0e
+  - cidr: 10.100.13.0/24
+    id: subnet-084f1bd75df97c603
+    name: itshellws_dev_kubernetes_k8s_prv_b
+    zone: us-east-1b
+    type: Private
+    egress: nat-04e04f4b26d4a9c0e
+  - cidr: 10.100.18.128/25
+    id: subnet-016ba2846d62f55ef
+    name: itshellws_dev_app1_aws_prv_b
+    zone: us-east-1b
+    type: Private
+    egress: nat-04e04f4b26d4a9c0e
+  - cidr: 10.100.18.0/25
+    id: subnet-033a05d08bd2f283f
+    name: itshellws_dev_app1_aws_prv_a
+    zone: us-east-1a
+    type: Private
+    egress: nat-08b13bfe74a49d984
+  - cidr: 10.100.12.0/24
+    id: subnet-0c876c3b4c9dc677d
+    name: itshellws_dev_kubernetes_k8s_prv_a
+    zone: us-east-1a
+    type: Private
+    egress: nat-08b13bfe74a49d984
+  - cidr: 10.100.20.0/24
+    id: subnet-005672747ba94019e
+    name: itshellws_dev_app1_k8s_prv_a
+    zone: us-east-1a
+    type: Private
+    egress: nat-08b13bfe74a49d984
+  - cidr: 10.100.48.0/25
+    id: subnet-0949dbfc2fe8debb1
+    name: itshellws_dev_traefik_aws_pub_a
+    zone: us-east-1a
+    type: Utility
+  - cidr: 10.100.17.0/25
+    id: subnet-0c1a29a08c61db194
+    name: itshellws_dev_app1_aws_pub_c
+    zone: us-east-1c
+    type: Utility
+  - cidr: 10.100.50.128/25
+    id: subnet-08e2174d90dfd9612
+    name: itshellws_dev_traefik_aws_prv_b
+    zone: us-east-1b
+    type: Private
+    egress: nat-04e04f4b26d4a9c0e
+  - cidr: 10.100.1.0/24
+    id: subnet-0eef6bea4ccedf175
+    name: itshellws_dev_general_aws_pub_b
+    zone: us-east-1b
+    type: Utility
+  - cidr: 10.100.50.0/25
+    id: subnet-0752be39559c195a3
+    name: itshellws_dev_traefik_aws_prv_a
+    zone: us-east-1a
+    type: Private
+    egress: nat-08b13bfe74a49d984
+  - cidr: 10.100.49.0/25
+    id: subnet-035b4de35483b7069
+    name: itshellws_dev_traefik_aws_pub_c
+    zone: us-east-1c
+    type: Utility
+  - cidr: 10.100.16.128/25
+    id: subnet-0c0ccc53bb5e7aedc
+    name: itshellws_dev_app1_aws_pub_b
+    zone: us-east-1b
+    type: Utility
+  - cidr: 10.100.2.0/24
+    id: subnet-02d13ae29bd8cc65d
+    name: itshellws_dev_general_aws_pub_c
+    zone: us-east-1c
+    type: Utility
+  - cidr: 10.100.14.0/24
+    id: subnet-0dc6f1109776e5d2c
+    name: itshellws_dev_kubernetes_k8s_prv_c
+    zone: us-east-1c
+    type: Private
+    egress: nat-0408cb090cd4c0bd0
+  - cidr: 10.100.4.0/24
+    id: subnet-0b94e97cd5340481d
+    name: itshellws_dev_general_aws_prv_a
+    zone: us-east-1a
+    type: Private
+    egress: nat-08b13bfe74a49d984
+  - cidr: 10.100.21.0/24
+    id: subnet-0bb98d03357aa800c
+    name: itshellws_dev_app1_k8s_prv_b
+    zone: us-east-1b
+    type: Private
+    egress: nat-04e04f4b26d4a9c0e
+  - cidr: 10.100.51.0/25
+    id: subnet-03e74a5f8563931ef
+    name: itshellws_dev_traefik_aws_prv_c
+    zone: us-east-1c
+    type: Private
+    egress: nat-0408cb090cd4c0bd0
+  - cidr: 10.100.0.0/24
+    id: subnet-0e9b32e4703a56798
+    name: itshellws_dev_general_aws_pub_a
+    zone: us-east-1a
+    type: Utility
+  - cidr: 10.100.6.0/24
+    id: subnet-0155e179a434aebfc
+    name: itshellws_dev_general_aws_prv_c
+    zone: us-east-1c
+    type: Private
+    egress: nat-0408cb090cd4c0bd0
+  - cidr: 10.100.52.0/24
+    id: subnet-04e18006310458d99
+    name: itshellws_dev_traefik_k8s_prv_a
+    zone: us-east-1a
+    type: Private
+    egress: nat-08b13bfe74a49d984
+  - cidr: 10.100.16.0/25
+    id: subnet-01ac0a402d135852c
+    name: itshellws_dev_app1_aws_pub_a
+    zone: us-east-1a
+    type: Utility
+  - cidr: 10.100.19.0/25
+    id: subnet-05635675a8faaefea
+    name: itshellws_dev_app1_aws_prv_c
+    zone: us-east-1c
+    type: Private
+    egress: nat-0408cb090cd4c0bd0
+  - cidr: 10.100.22.0/24
+    id: subnet-07cbcb0e698ea984a
+    name: itshellws_dev_app1_k8s_prv_c
+    zone: us-east-1c
+    type: Private
+    egress: nat-0408cb090cd4c0bd0
+  topology:
+    bastion:
+      bastionPublicName: bastion.cluster.dev.itshellws-k8s.com
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: master-us-east-1a
+spec:
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-east-1a
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  role: Master
+  subnets:
+  - itshellws_dev_kubernetes_k8s_prv_a
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: master-us-east-1b
+spec:
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-east-1b
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  role: Master
+  subnets:
+  - itshellws_dev_kubernetes_k8s_prv_b
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: master-us-east-1c
+spec:
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.medium
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-east-1c
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  role: Master
+  subnets:
+  - itshellws_dev_kubernetes_k8s_prv_c
+---
+# APP1
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: app1
+spec:
+  cloudLabels:
+    product: app1
+    env: dev
+    role: k8sworker
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.small
+  maxSize: 10
+  minSize: 3
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  nodeLabels:
+    kops.k8s.io/instancegroup: app1
+  role: Node
+  subnets:
+  - itshellws_dev_app1_k8s_prv_a
+  - itshellws_dev_app1_k8s_prv_b
+  - itshellws_dev_app1_k8s_prv_c
+---
+# TRAEFIK
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: traefik
+spec:
+  cloudLabels:
+    product: traefik
+    env: dev
+    role: k8sworker
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.medium
+  maxSize: 3
+  minSize: 2
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  nodeLabels:
+    kops.k8s.io/instancegroup: traefik
+  role: Node
+  subnets:
+  - itshellws_dev_traefik_k8s_prv_a
+  - itshellws_dev_traefik_k8s_prv_b
+  - itshellws_dev_traefik_k8s_prv_c
+---
+# SERVICES
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: services
+spec:
+  cloudLabels:
+    product: services
+    env: dev
+    role: k8sworker
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.small
+  maxSize: 6
+  minSize: 4
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  nodeLabels:
+    kops.k8s.io/instancegroup: services
+  role: Node
+  subnets:
+  - itshellws_dev_app1_k8s_prv_a
+  - itshellws_dev_app1_k8s_prv_b
+  - itshellws_dev_app1_k8s_prv_c
+---
+# LOAD-AVERAGE
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: load
+spec:
+  cloudLabels:
+    product: load
+    env: dev
+    role: k8sworker
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.small
+  maxSize: 7
+  minSize: 2
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  nodeLabels:
+    kops.k8s.io/instancegroup: load
+  role: Node
+  subnets:
+  - itshellws_dev_app1_k8s_prv_a
+  - itshellws_dev_app1_k8s_prv_b
+  - itshellws_dev_app1_k8s_prv_c
+---
+# ELK
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: cluster.dev.itshellws-k8s.com
+  name: elk
+spec:
+  cloudLabels:
+    product: elk
+    env: dev
+    role: k8sworker
+  image: 595879546273/CoreOS-stable-1800.7.0-hvm
+  machineType: t2.small
+  maxSize: 5
+  minSize: 3
+  rootVolumeSize: 15
+  rootVolumeType: gp2
+  nodeLabels:
+    kops.k8s.io/instancegroup: elk
+  role: Node
+  subnets:
+  - itshellws_dev_app1_k8s_prv_a
+  - itshellws_dev_app1_k8s_prv_b
+  - itshellws_dev_app1_k8s_prv_c

@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    traefik.frontend.rule.type: PathPrefix
+  generation: 1
+  name: kibana
+  namespace: kube-system
+spec:
+  rules:
+  - host: kibana.apps.dev.itshellws-k8s.com
+    http:
+      paths:
+      - backend:
+          serviceName: kibana-logging
+          servicePort: 5601
+        path: /

@@ -1,0 +1,17 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: traefik-pv
+  namespace: kube-system
+  labels:
+    type: amazonEBS
+spec:
+  capacity:
+    storage: 1Gi
+  storageClassName: gp2
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany
+  awsElasticBlockStore:
+    volumeID: vol-0ecfc870b4c58e1e3
+    fsType: ext4

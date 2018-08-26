@@ -1,0 +1,14 @@
+apiVersion: "v1"
+kind: "PersistentVolume"
+metadata:
+  name: elk-1
+spec:
+  capacity:
+      storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: slow
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: elk

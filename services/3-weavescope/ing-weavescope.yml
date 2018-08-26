@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    traefik.frontend.rule.type: PathPrefix
+  generation: 1
+  name: weave-scope-app
+  namespace: default
+spec:
+  rules:
+  - host: weave-mesh.apps.dev.itshellws-k8s.com
+    http:
+      paths:
+      - backend:
+          serviceName: weave-scope-app
+          servicePort: 80
+        path: /

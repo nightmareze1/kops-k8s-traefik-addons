@@ -1,0 +1,39 @@
+kops terraform - Traefik and Monitoring tools.
+
+# Requisitos el bucket de s3 para terra y kops creado
+# ZONA DNS para el cluster (debe coincidir con cluster.yml)
+
+# Necesito crear los recursos con terraform-primero y luego en el template actualizar las subnets, vpc-id y nats.
+Una vez que tenemos hecho esto necesitamos correr los siguientes comandos para levantar el cluster
+
+➜ source kops.env
+➜ kops create -f cluster.yml
+➜ kops create secret --name cluster.dev.itshellws-k8s.com sshpublickey admin -i ~/.ssh/virginia-kubernetes.pub
+➜ kops update cluster cluster.dev.itshellws-k8s.com --yes -v 2
+
+# Esperar 10 minutos y ya tenemos el cluster operativo.
+
+➜ kops get cluster
+➜ kops validate cluster
+
+# check nodegroup
+
+➜ kubectl get nodes -o wide --show-labels
+
+➜ kubectl get nodes --label-columns kops.k8s.io/instancegroup
+
+# bajar de s3 tu cluster config y generar un cluster.yml
+
+kops get cluster cluster.dev.itshellws-k8s.com -o yaml > cluster-config.yaml
+
+Borrar el cluster de kops
+
+➜ kops delete cluster stg-k8s.cloudarte.com --yes
+
+https://github.com/nightmareze1/elb-kops-manual-asg
+
+Configurar tu default region de boto3 con la que vas a usar con el cluster.
+
+Editar la region en los files lb.sh deploy-lb-manual.sh y delete-deploy-lb-manual.sh
+
+Correr el script depende el tipo de deploy que queremos.
